@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoffeeLink – Interactive Demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+  :root{
+    --color-background-primary:#ffffff;
+    --color-background-secondary:#f4f3ee;
+    --color-background-info:#E6F1FB;
+    --color-background-success:#EAF3DE;
+    --color-text-primary:#1f1f1c;
+    --color-text-secondary:#5f5e5a;
+    --color-text-tertiary:#8a8983;
+    --color-text-info:#185FA5;
+    --color-text-success:#3B6D11;
+    --color-text-danger:#A32D2D;
+    --color-border-primary:rgba(0,0,0,.4);
+    --color-border-secondary:rgba(0,0,0,.3);
+    --color-border-tertiary:rgba(0,0,0,.15);
+    --border-radius-md:8px;
+    --border-radius-lg:12px;
+    --font-mono:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
+    --font-serif:Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 14px;background:#e9e7df;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--color-text-primary);font-size:15px;line-height:1.5}
+  .page{max-width:720px;margin:0 auto}
+  h3{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+  p{margin:0}
+  input{height:36px;padding:0 10px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:14px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:inherit}
+  input:focus{outline:none;border-color:var(--color-text-info);box-shadow:0 0 0 2px rgba(24,95,165,.15)}
+  button{padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:8px;background:transparent;cursor:pointer;font-size:13.5px;font-family:inherit;color:var(--color-text-primary);transition:background .15s}
+  button:hover{background:var(--color-background-secondary)}
+  button:active{transform:scale(.98)}
+  button:disabled{opacity:.6;cursor:default}
+  .clp{display:none}
+  .clp.on{display:block;animation:clf .35s ease}
+  @keyframes clf{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .cldot{width:8px;height:8px;border-radius:50%;background:var(--color-border-secondary);transition:all .2s}
+  .cldot.on{background:var(--color-text-info);width:22px;border-radius:6px}
+  .clopt{cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 0}
+  .clbox{width:15px;height:15px;border:1.5px solid var(--color-border-primary);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .clbox.rd{border-radius:50%}
+  .cltl{opacity:0;transform:translateY(4px);transition:all .3s}
+  .cltl.in{opacity:1;transform:none}
+  .cllang{cursor:pointer;flex:1;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:22px;text-align:center;transition:border-color .15s}
+  .cllang:hover{border-color:var(--color-border-primary)}
+  #cl-reset{background:none;border:none;padding:4px;cursor:pointer;color:var(--color-text-tertiary);font-size:16px;line-height:1}
+  #cl-reset:hover{color:var(--color-text-secondary);background:none}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="width:28px;height:28px;border-radius:8px;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;color:var(--color-text-info)"><i class="ti ti-coffee" aria-hidden="true"></i></span>
+        <span style="font-size:15px;font-weight:500">CoffeeLink</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="cl-langsw" style="font-size:12px;color:var(--color-text-secondary);cursor:pointer;user-select:none"></span>
+        <div style="display:flex;align-items:center;gap:6px" id="cl-dots"></div>
+        <button id="cl-reset" aria-label="Demo zurücksetzen"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+    <div style="min-height:430px;padding:18px">
+
+      <div class="clp on" data-step="0">
+        <div style="max-width:460px;margin:40px auto 0;text-align:center">
+          <i class="ti ti-language" aria-hidden="true" style="font-size:30px;color:var(--color-text-info)"></i>
+          <h3 style="margin:10px 0 4px">Sprache wählen · Choose language</h3>
+          <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 20px">In welcher Sprache möchtest du die Demo sehen?<br/>Which language would you like the demo in?</p>
+          <div style="display:flex;gap:12px">
+            <div class="cllang" id="cl-pick-de"><div style="font-size:20px;font-weight:500">DE</div><div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px">Deutsch</div></div>
+            <div class="cllang" id="cl-pick-en"><div style="font-size:20px;font-weight:500">EN</div><div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px">English</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="clp" data-step="1">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border-radius:20px;padding:6px 12px;font-size:12px;color:var(--color-text-secondary);margin-bottom:14px;max-width:340px"><i class="ti ti-lock" aria-hidden="true"></i> forms.office.com/r/coffeelink</div>
+        <div id="cl-form" style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;max-width:460px">
+          <div style="height:6px;background:#5b5fc7"></div>
+          <div style="padding:18px">
+            <div id="f-title" style="font-size:16px;font-weight:500;margin-bottom:2px"></div>
+            <div id="f-sub" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:16px"></div>
+            <div style="margin-bottom:14px"><div style="font-size:13px;margin-bottom:4px"><span id="f-name"></span> <span style="color:var(--color-text-danger)">*</span></div><input value="Timon Harder" style="width:100%"/></div>
+            <div style="margin-bottom:14px"><div style="font-size:13px;margin-bottom:4px">E-Mail <span style="color:var(--color-text-danger)">*</span></div><input value="timon.harder@swisscom.com" style="width:100%"/></div>
+            <div style="margin-bottom:14px"><div id="f-ql" style="font-size:13px;margin-bottom:6px"></div>
+              <div id="cl-langs">
+                <div class="clopt"><span class="clbox on"></span><span id="o-de"></span></div>
+                <div class="clopt"><span class="clbox on"></span><span id="o-en"></span></div>
+                <div class="clopt"><span class="clbox"></span><span id="o-fr"></span></div>
+                <div class="clopt"><span class="clbox"></span><span id="o-it"></span></div>
+              </div>
+            </div>
+            <div style="margin-bottom:18px"><div id="f-qf" style="font-size:13px;margin-bottom:6px"></div>
+              <div id="cl-freq">
+                <div class="clopt"><span class="clbox rd on"></span><span id="f-w"></span></div>
+                <div class="clopt"><span class="clbox rd"></span><span id="f-b"></span></div>
+                <div class="clopt"><span class="clbox rd"></span><span id="f-m"></span></div>
+              </div>
+            </div>
+            <button id="cl-submit" style="background:#5b5fc7;color:#fff;border:none"></button>
+          </div>
+        </div>
+        <div id="cl-confirm" style="display:none;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;max-width:460px">
+          <div style="height:6px;background:#5b5fc7"></div>
+          <div style="padding:34px 18px;text-align:center">
+            <span style="width:46px;height:46px;border-radius:50%;background:var(--color-background-success);color:var(--color-text-success);display:inline-flex;align-items:center;justify-content:center;font-size:24px"><i class="ti ti-check" aria-hidden="true"></i></span>
+            <div id="c-t" style="font-size:16px;font-weight:500;margin-top:12px"></div>
+            <div id="c-s" style="font-size:13px;color:var(--color-text-secondary);margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="clp" data-step="2">
+        <p id="b-p" style="font-size:13px;color:var(--color-text-secondary);margin:0 0 12px"></p>
+        <div style="border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid var(--color-border-tertiary)">
+          <div style="background:#23232e;display:flex;align-items:center;gap:6px;padding:8px 12px">
+            <span style="width:11px;height:11px;border-radius:50%;background:#ff5f56;display:inline-block"></span>
+            <span style="width:11px;height:11px;border-radius:50%;background:#ffbd2e;display:inline-block"></span>
+            <span style="width:11px;height:11px;border-radius:50%;background:#27c93f;display:inline-block"></span>
+            <span style="font-size:11px;color:#9a9aa8;margin-left:8px;font-family:var(--font-mono)">aws ecs · coffeelink-prod · run #87</span>
+          </div>
+          <div id="cl-term" style="background:#14141b;padding:14px;height:330px;overflow-y:auto;font-family:var(--font-mono);font-size:12px;line-height:1.75;color:#c8c8d0"></div>
+        </div>
+      </div>
+
+      <div class="clp" data-step="3">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;margin-bottom:12px"><i class="ti ti-mail" aria-hidden="true" style="color:var(--color-text-info)"></i> <span id="ib-title"></span></div>
+        <div id="cl-inbox">
+          <div id="cl-msg" style="cursor:pointer;display:flex;align-items:center;gap:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:12px 14px;background:var(--color-background-info)">
+            <span style="width:36px;height:36px;border-radius:50%;background:var(--color-background-primary);color:var(--color-text-info);display:flex;align-items:center;justify-content:center"><i class="ti ti-coffee" aria-hidden="true"></i></span>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;justify-content:space-between"><span style="font-size:14px;font-weight:500">CoffeeLink</span><span style="font-size:12px;color:var(--color-text-secondary)">08:02</span></div>
+              <div style="font-size:13px;font-weight:500">It's a CoffeeLink Match!</div>
+              <div id="ib-snip" style="font-size:12px;color:var(--color-text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+            </div>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--color-text-info);flex-shrink:0"></span>
+          </div>
+          <div style="font-size:12px;color:var(--color-text-tertiary);margin-top:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-arrow-up" aria-hidden="true"></i> <span id="ib-hintt"></span></div>
+        </div>
+        <div id="cl-email" style="display:none;max-width:460px">
+          <div id="e-meta" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px"></div>
+          <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden">
+            <div style="background:#001E50;padding:24px 18px 20px;text-align:center">
+              <i class="ti ti-coffee" aria-hidden="true" style="font-size:28px;color:#7fa8cc"></i>
+              <div style="font-size:19px;font-weight:500;color:#ffffff;margin-top:6px">It's a CoffeeLink Match!</div>
+              <div id="e-tag" style="font-size:11px;letter-spacing:1.5px;color:#7fa8cc;margin-top:4px;text-transform:uppercase"></div>
+            </div>
+            <div style="background:var(--color-background-primary);padding:20px 18px">
+              <div id="e-greet" style="font-size:16px;font-weight:500;margin-bottom:8px"></div>
+              <p id="e-intro" style="font-size:13.5px;line-height:1.65;color:var(--color-text-secondary);margin:0 0 16px"></p>
+              <div style="background:#FAEEDA;border-left:3px solid #BA7517;padding:12px 14px;margin-bottom:18px">
+                <div id="e-tipt" style="font-size:11px;font-weight:500;letter-spacing:1px;color:#854F0B;text-transform:uppercase;margin-bottom:6px"></div>
+                <div id="e-tip1" style="font-size:12.5px;color:#633806;padding:2px 0"></div>
+                <div id="e-tip2" style="font-size:12.5px;color:#633806;padding:2px 0"></div>
+                <div id="e-tip3" style="font-size:12.5px;color:#633806;padding:2px 0"></div>
+              </div>
+              <div style="text-align:center;margin-bottom:6px">
+                <span style="display:inline-block;background:#185FA5;color:#ffffff;font-size:13.5px;font-weight:500;padding:10px 22px;border-radius:8px"><i class="ti ti-calendar" aria-hidden="true" style="vertical-align:-2px"></i> <span id="e-cta"></span></span>
+              </div>
+              <div id="e-hint" style="font-size:11.5px;color:var(--color-text-tertiary);text-align:center;margin-bottom:16px"></div>
+              <div id="e-quote" style="font-size:12.5px;font-style:italic;color:var(--color-text-secondary);text-align:center;border-top:0.5px solid var(--color-border-tertiary);padding-top:12px;font-family:var(--font-serif)"></div>
+            </div>
+            <div style="background:#001E50;padding:12px 18px;text-align:center">
+              <div id="e-foot" style="font-size:11px;color:#7fa8cc;line-height:1.6"></div>
+              <div style="font-size:10.5px;color:#4a6a8a;margin-top:3px">made with <i class="ti ti-coffee" aria-hidden="true" style="font-size:11px"></i> by T.H.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="clp" data-step="4">
+        <h3 id="a-h" style="margin:0 0 4px"></h3>
+        <p id="a-p" style="font-size:13px;color:var(--color-text-secondary);margin:0 0 14px"></p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-bottom:16px">
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div id="k1" style="font-size:12px;color:var(--color-text-secondary)"></div><div style="font-size:18px;font-weight:500">50</div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div id="k2" style="font-size:12px;color:var(--color-text-secondary)"></div><div style="font-size:18px;font-weight:500">Mo 08:00</div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div id="k3" style="font-size:12px;color:var(--color-text-secondary)"></div><div id="k3v" style="font-size:18px;font-weight:500;color:var(--color-text-success)"></div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div id="k4" style="font-size:12px;color:var(--color-text-secondary)"></div><div style="font-size:18px;font-weight:500">21</div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div id="k5" style="font-size:12px;color:var(--color-text-secondary)"></div><div style="font-size:18px;font-weight:500">≈ 0</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px">
+          <span style="display:flex;align-items:center;gap:6px;background:var(--color-background-secondary);padding:8px 12px;border-radius:8px"><i class="ti ti-file-text" aria-hidden="true"></i> Forms</span>
+          <i class="ti ti-arrow-right" aria-hidden="true" style="color:var(--color-text-tertiary)"></i>
+          <span style="display:flex;align-items:center;gap:6px;background:var(--color-background-secondary);padding:8px 12px;border-radius:8px"><i class="ti ti-cloud" aria-hidden="true"></i> AWS</span>
+          <i class="ti ti-arrow-right" aria-hidden="true" style="color:var(--color-text-tertiary)"></i>
+          <span style="display:flex;align-items:center;gap:6px;background:var(--color-background-secondary);padding:8px 12px;border-radius:8px"><i class="ti ti-users" aria-hidden="true"></i> <span id="fl-m"></span></span>
+          <i class="ti ti-arrow-right" aria-hidden="true" style="color:var(--color-text-tertiary)"></i>
+          <span style="display:flex;align-items:center;gap:6px;background:var(--color-background-secondary);padding:8px 12px;border-radius:8px"><i class="ti ti-mail" aria-hidden="true"></i> <span id="fl-i"></span></span>
+        </div>
+      </div>
+
+      <div class="clp" data-step="5">
+        <h3 id="w-h" style="margin:0 0 4px"></h3>
+        <p id="w-p" style="font-size:13px;color:var(--color-text-secondary);margin:0 0 16px"></p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-bottom:16px">
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div style="font-size:22px;font-weight:500;color:var(--color-text-info)">50</div><div id="m1" style="font-size:12px;color:var(--color-text-secondary);margin-top:2px"></div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div style="font-size:22px;font-weight:500;color:var(--color-text-info)">21</div><div id="m2" style="font-size:12px;color:var(--color-text-secondary);margin-top:2px"></div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div style="font-size:22px;font-weight:500;color:var(--color-text-info)">1'000+</div><div id="m3" style="font-size:12px;color:var(--color-text-secondary);margin-top:2px"></div></div>
+          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px"><div id="m4v" style="font-size:22px;font-weight:500;color:var(--color-text-info)"></div><div id="m4" style="font-size:12px;color:var(--color-text-secondary);margin-top:2px"></div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px">
+          <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px">
+            <i class="ti ti-users" aria-hidden="true" style="font-size:20px;color:var(--color-text-info)"></i>
+            <div id="w-1" style="font-size:14px;font-weight:500;margin:6px 0 3px"></div>
+            <div id="w-1d" style="font-size:12.5px;line-height:1.55;color:var(--color-text-secondary)"></div>
+          </div>
+          <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px">
+            <i class="ti ti-heart" aria-hidden="true" style="font-size:20px;color:var(--color-text-info)"></i>
+            <div id="w-2" style="font-size:14px;font-weight:500;margin:6px 0 3px"></div>
+            <div id="w-2d" style="font-size:12.5px;line-height:1.55;color:var(--color-text-secondary)"></div>
+          </div>
+          <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px">
+            <i class="ti ti-trending-up" aria-hidden="true" style="font-size:20px;color:var(--color-text-info)"></i>
+            <div id="w-3" style="font-size:14px;font-weight:500;margin:6px 0 3px"></div>
+            <div id="w-3d" style="font-size:12.5px;line-height:1.55;color:var(--color-text-secondary)"></div>
+          </div>
+        </div>
+        <div style="background:var(--color-background-info);border-radius:var(--border-radius-lg);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div style="min-width:200px;flex:1">
+            <div id="w-pitch" style="font-size:14px;font-weight:500;color:var(--color-text-info)"></div>
+            <div id="w-pitchs" style="font-size:12.5px;color:var(--color-text-info);opacity:.8;margin-top:2px"></div>
+          </div>
+          <button id="cl-cta" style="background:var(--color-background-primary)"></button>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary)">
+      <button id="cl-back"><i class="ti ti-arrow-left" aria-hidden="true"></i> <span id="n-b"></span></button>
+      <span id="cl-label" style="font-size:12px;color:var(--color-text-tertiary)"></span>
+      <button id="cl-next"><span id="n-n"></span> <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function openMail(sub,body){window.location.href='mailto:timon.harder@swisscom.com?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body);}
+  var T={
+    de:{
+      steps:['Sprache','Anmelden','Backend','Posteingang','Automatik','Wert'],
+      step:'Schritt',back:'Zurück',next:'Weiter',
+      fTitle:'CoffeeLink – Anmeldung',fSub:'Verkuppelt dich regelmässig für eine Kaffeepause.',fName:'Name',
+      fQl:'In welchen Sprachen möchtest du matchen?',fQf:'Wie oft möchtest du einen Match?',
+      oDe:'Deutsch',oEn:'Englisch',oFr:'Französisch',oIt:'Italienisch',
+      fW:'Wöchentlich',fB:'Zweiwöchentlich',fM:'Monatlich',
+      submit:'Absenden',sending:'Wird gesendet …',
+      cT:'Ihre Antwort wurde gesendet.',cS:'Danke! Du bist jetzt einer von 50 Teilnehmenden.',
+      bP:'Montag 08:00 – der Bot startet automatisch in der AWS-Cloud:',
+      ibTitle:'Posteingang',ibSnip:'Hallo Anna & Bruno! Ihr habt einen CoffeeLink Match …',ibHint:'Nachricht anklicken zum Öffnen',
+      eMeta:'Von: coffee.link@swisscom.com · An: Anna Meier, Bruno Keller',
+      eTag:'Zeit für eine Pause',eGreet:'Hallo Anna & Bruno!',
+      eIntro:'Ihr habt einen CoffeeLink Match – die perfekte Ausrede, gemeinsam eine kleine Pausenzeit zu verbringen. Ob Cafeteria, Spaziergang ums Gebäude oder online via Teams: ihr entscheidet.',
+      eTipt:'So funktioniert’s',eTip1:'1 · Findet einen Termin, der für beide passt',eTip2:'2 · Trefft euch – physisch oder digital',eTip3:'3 · Lasst euch von einem guten Gespräch tragen',
+      eCta:'Jetzt Termin finden',eHint:'Öffnet eine vorbereitete E-Mail an alle Beteiligten',
+      eQuote:'«Die besten Ideen entstehen oft beim Kaffee.»',
+      eFoot:'Diese E-Mail wurde automatisch durch den CoffeeLink-Bot verschickt.',
+      aH:'Läuft vollautomatisch',aP:'Serverless in AWS – kein Laptop, keine manuelle Arbeit.',
+      k1:'Teilnehmende',k2:'Zeitplan',k3:'Letzter Lauf',k3v:'Erfolg',k4:'Matches',k5:'Kosten',
+      flM:'Matching',flI:'Einladung',
+      wH:'Der Mehrwert',wP:'CoffeeLink macht aus einer Anmeldung eine gelebte Vernetzungskultur – vollautomatisch.',
+      m1:'Teilnehmende',m2:'Matches pro Woche',m3:'Kaffeepausen pro Jahr',m4v:'0 Min.',m4:'Aufwand pro Woche',
+      w1:'Silos aufbrechen',w1d:'Verbindet Menschen, die sich im Alltag nie begegnen würden – über Teams, Standorte und Hierarchien hinweg.',
+      w2:'Wellbeing, das ankommt',w2d:'Eine echte Pause mit echtem Gespräch – niederschwellig, freiwillig und jede Woche aufs Neue.',
+      w3:'Skaliert ohne Aufwand',w3d:'Ob 50 oder 500 Teilnehmende: gleiche Infrastruktur, gleiche Kosten nahe null, null zusätzliche Arbeit.',
+      wPitch:'Vom Prototyp zum laufenden System – bereit für den Rollout.',wPitchS:'Technisch belegt, datensparsam, sofort erweiterbar.',
+      cta:'Interessiert? Demo anfragen',
+      mailSub:'CoffeeLink – Demo-Anfrage',
+      mailBody:'Hallo Timon\n\nIch habe die CoffeeLink-Demo gesehen und bin interessiert. Ich würde gerne mehr erfahren – wann hättest du Zeit für eine Demo?\n\nLiebe Grüsse'
+    },
+    en:{
+      steps:['Language','Sign up','Backend','Inbox','Automation','Value'],
+      step:'Step',back:'Back',next:'Next',
+      fTitle:'CoffeeLink – Sign-up',fSub:'Pairs you up regularly for a coffee break.',fName:'Name',
+      fQl:'Which languages would you like to match in?',fQf:'How often would you like a match?',
+      oDe:'German',oEn:'English',oFr:'French',oIt:'Italian',
+      fW:'Weekly',fB:'Biweekly',fM:'Monthly',
+      submit:'Submit',sending:'Submitting …',
+      cT:'Your response was submitted.',cS:'Thanks! You are now one of 50 participants.',
+      bP:'Monday 08:00 – the bot starts automatically in the AWS cloud:',
+      ibTitle:'Inbox',ibSnip:'Hi Anna & Bruno! You have a CoffeeLink match …',ibHint:'Click the message to open it',
+      eMeta:'From: coffee.link@swisscom.com · To: Anna Meier, Bruno Keller',
+      eTag:'Time for a break',eGreet:'Hi Anna & Bruno!',
+      eIntro:'You have a CoffeeLink match – the perfect excuse to share a short break together. Cafeteria, a walk around the building or online via Teams: you decide.',
+      eTipt:'How it works',eTip1:'1 · Find a time that works for both of you',eTip2:'2 · Meet up – in person or online',eTip3:'3 · Let a good conversation carry you',
+      eCta:'Find a time now',eHint:'Opens a pre-filled email to everyone involved',
+      eQuote:'“The best ideas are born over coffee.”',
+      eFoot:'This email was sent automatically by the CoffeeLink bot.',
+      aH:'Runs fully automatically',aP:'Serverless on AWS – no laptop, no manual work.',
+      k1:'Participants',k2:'Schedule',k3:'Last run',k3v:'Success',k4:'Matches',k5:'Cost',
+      flM:'Matching',flI:'Invitation',
+      wH:'The value',wP:'CoffeeLink turns a sign-up into a living culture of connection – fully automated.',
+      m1:'Participants',m2:'Matches per week',m3:'Coffee breaks per year',m4v:'0 min',m4:'Effort per week',
+      w1:'Breaking down silos',w1d:'Connects people who would never cross paths – across teams, locations and hierarchies.',
+      w2:'Wellbeing that lands',w2d:'A real break with a real conversation – low-threshold, voluntary, fresh every week.',
+      w3:'Scales effortlessly',w3d:'50 or 500 participants: same infrastructure, near-zero cost, zero extra work.',
+      wPitch:'From prototype to running system – ready to roll out.',wPitchS:'Technically proven, privacy-friendly, instantly extensible.',
+      cta:'Interested? Request a demo',
+      mailSub:'CoffeeLink – demo request',
+      mailBody:'Hi Timon\n\nI saw the CoffeeLink demo and I am interested. I would like to hear more – when do you have time for a demo?\n\nBest regards'
+    }
+  };
+  var lang='de',i=0,termRun=false,termTimers=[];
+  var steps=Array.prototype.slice.call(document.querySelectorAll('.clp'));
+  var dotsWrap=document.getElementById('cl-dots');
+  for(var d=1;d<steps.length;d++){var dot=document.createElement('span');dot.className='cldot';dotsWrap.appendChild(dot);}
+  var dots=Array.prototype.slice.call(dotsWrap.children);
+  var back=document.getElementById('cl-back'),next=document.getElementById('cl-next'),label=document.getElementById('cl-label');
+
+  function txt(id,s){var el=document.getElementById(id);if(el)el.textContent=s;}
+  function applyLang(){
+    var L=T[lang];
+    txt('f-title',L.fTitle);txt('f-sub',L.fSub);txt('f-name',L.fName);txt('f-ql',L.fQl);txt('f-qf',L.fQf);
+    txt('o-de',L.oDe);txt('o-en',L.oEn);txt('o-fr',L.oFr);txt('o-it',L.oIt);
+    txt('f-w',L.fW);txt('f-b',L.fB);txt('f-m',L.fM);
+    var sb=document.getElementById('cl-submit');if(!sb.disabled)sb.textContent=L.submit;
+    txt('c-t',L.cT);txt('c-s',L.cS);txt('b-p',L.bP);
+    txt('ib-title',L.ibTitle);txt('ib-snip',L.ibSnip);txt('ib-hintt',L.ibHint);
+    txt('e-meta',L.eMeta);txt('e-tag',L.eTag);txt('e-greet',L.eGreet);txt('e-intro',L.eIntro);
+    txt('e-tipt',L.eTipt);txt('e-tip1',L.eTip1);txt('e-tip2',L.eTip2);txt('e-tip3',L.eTip3);
+    txt('e-cta',L.eCta);txt('e-hint',L.eHint);txt('e-quote',L.eQuote);txt('e-foot',L.eFoot);
+    txt('a-h',L.aH);txt('a-p',L.aP);
+    txt('k1',L.k1);txt('k2',L.k2);txt('k3',L.k3);txt('k3v',L.k3v);txt('k4',L.k4);txt('k5',L.k5);
+    txt('fl-m',L.flM);txt('fl-i',L.flI);
+    txt('w-h',L.wH);txt('w-p',L.wP);
+    txt('m1',L.m1);txt('m2',L.m2);txt('m3',L.m3);txt('m4v',L.m4v);txt('m4',L.m4);
+    txt('w-1',L.w1);txt('w-1d',L.w1d);txt('w-2',L.w2);txt('w-2d',L.w2d);txt('w-3',L.w3);txt('w-3d',L.w3d);
+    txt('w-pitch',L.wPitch);txt('w-pitchs',L.wPitchS);
+    txt('cl-cta',L.cta);txt('n-b',L.back);txt('n-n',L.next);
+    document.getElementById('cl-langsw').textContent=lang==='de'?'DE · en':'de · EN';
+    render();
+  }
+  function render(){
+    var L=T[lang];
+    steps.forEach(function(s,n){s.classList.toggle('on',n===i);});
+    dots.forEach(function(d,n){d.classList.toggle('on',n+1===i);});
+    back.style.visibility=(i<=1)?'hidden':'visible';
+    next.style.visibility=(i===0||i===steps.length-1)?'hidden':'visible';
+    label.textContent=i===0?'':L.step+' '+i+' / '+(steps.length-1)+' · '+L.steps[i];
+    if(i===2)startTerm();
+  }
+  back.onclick=function(){if(i>1){i--;render();}};
+  next.onclick=function(){if(i>0&&i<steps.length-1){i++;render();}};
+  document.getElementById('cl-pick-de').onclick=function(){lang='de';i=1;applyLang();};
+  document.getElementById('cl-pick-en').onclick=function(){lang='en';i=1;applyLang();};
+  document.getElementById('cl-langsw').onclick=function(){lang=lang==='de'?'en':'de';applyLang();};
+
+  var submit=document.getElementById('cl-submit');
+  function resetDemo(){
+    termTimers.forEach(clearTimeout);termTimers=[];termRun=false;
+    document.getElementById('cl-term').innerHTML='';
+    document.getElementById('cl-form').style.display='block';
+    document.getElementById('cl-confirm').style.display='none';
+    submit.disabled=false;submit.textContent=T[lang].submit;
+    document.getElementById('cl-inbox').style.display='block';
+    document.getElementById('cl-email').style.display='none';
+    i=0;render();
+  }
+  document.getElementById('cl-reset').onclick=resetDemo;
+
+  function wireOpts(id,radio){
+    var g=document.getElementById(id);
+    Array.prototype.slice.call(g.children).forEach(function(o){
+      o.onclick=function(){
+        var box=o.querySelector('.clbox');
+        if(radio){Array.prototype.slice.call(g.children).forEach(function(x){paintBox(x.querySelector('.clbox'),false);});paintBox(box,true);}
+        else{paintBox(box,!box.classList.contains('on'));}
+      };
+    });
+  }
+  function paintBox(box,on){
+    box.classList.toggle('on',on);
+    if(on){box.style.background='#5b5fc7';box.style.borderColor='#5b5fc7';box.innerHTML=box.classList.contains('rd')?'<span style="width:7px;height:7px;border-radius:50%;background:#fff;display:inline-block"></span>':'<i class="ti ti-check" style="color:#fff;font-size:11px"></i>';}
+    else{box.style.background='transparent';box.style.borderColor='var(--color-border-primary)';box.innerHTML='';}
+  }
+  Array.prototype.slice.call(document.querySelectorAll('.clbox.on')).forEach(function(b){paintBox(b,true);});
+  wireOpts('cl-langs',false);wireOpts('cl-freq',true);
+
+  submit.onclick=function(){
+    submit.disabled=true;submit.textContent=T[lang].sending;
+    setTimeout(function(){
+      document.getElementById('cl-form').style.display='none';
+      document.getElementById('cl-confirm').style.display='block';
+      setTimeout(function(){if(i===1){i=2;render();}},1700);
+    },800);
+  };
+
+  var GRAY='#6b6b78',CYAN='#56b6c2',GREEN='#79c879',WHITE='#e8e8ef',TXT='#c8c8d0';
+  var first=['anna.meier','bruno.keller','carla.rossi','david.favre','eva.schmid','felix.brun','greta.vogel','hans.weber','ines.koch','jonas.frei','katja.lang','luca.bianchi','mara.steiner','nico.baumann','olivia.marti','pascal.roth','rita.huber','sven.moser','tanja.wyss','urs.graf','vera.kunz','yannick.bader','zoe.berger','timon.harder','lea.hofer','marco.conti','nina.suter','oskar.wenger','petra.gerber','rahel.zbinden','simon.fuchs','tina.bachmann','ueli.schneider','walter.egli','xenia.probst','yara.stalder','mia.lutz','noah.bieri','elena.sutter','samuel.koller','laura.frey','beat.zimmermann'];
+  var lines=[
+    ['08:00:02','INFO ',CYAN,'Starting CoffeeLink (mode: S3/cloud)',TXT,0],
+    ['08:00:02','INFO ',CYAN,'S3 download: input/participants.xlsx',TXT,0],
+    ['08:00:03','INFO ',CYAN,'S3 download: config/template.html',TXT,0],
+    ['08:00:03','INFO ',CYAN,'S3 download: state/coffeelink.db',TXT,0],
+    ['08:00:04','INFO ',CYAN,'Excel import: 50 rows processed (48 active, 2 inactive)',TXT,0],
+    ['08:00:04','INFO ',CYAN,'Running matcher',TXT,0],
+    ['08:00:04','INFO ',CYAN,"Active cycles (week 2 of month): {'weekly', 'biweekly'}",TXT,0],
+    ['08:00:04','INFO ',CYAN,"Found 28 eligible users for frequency 'weekly'",TXT,0],
+    ['08:00:04','INFO ',CYAN,"Found 14 eligible users for frequency 'biweekly'",TXT,0],
+    ['08:00:04','INFO ',CYAN,'Total eligible users: 42',TXT,0]
+  ];
+  for(var p=0;p<21;p++){lines.push(['08:00:05','MATCH',GREEN,'Paired: '+first[p*2]+'  <->  '+first[p*2+1],GREEN,1]);}
+  lines=lines.concat([
+    ['08:00:05','INFO ',CYAN,'Matched 21 pairs',TXT,0],
+    ['08:00:05','INFO ',CYAN,'Sending 21 match group(s) via Power Automate',TXT,0],
+    ['08:00:06','OK   ',GREEN,'Power Automate accepted request: HTTP 202',GREEN,0],
+    ['08:00:06','INFO ',CYAN,'Updating match history for 42 users',TXT,0],
+    ['08:00:07','INFO ',CYAN,'Report written: reports/coffeelink_report_2026-06-15.txt',TXT,0],
+    ['08:00:07','INFO ',CYAN,'S3 upload: state/coffeelink.db',TXT,0],
+    ['08:00:07','DONE ',WHITE,'Run complete — 21 matched, 21 sent, 0 failed',WHITE,0]
+  ]);
+  function startTerm(){
+    if(termRun)return;termRun=true;
+    var term=document.getElementById('cl-term');
+    var t=400;
+    lines.forEach(function(ln,n){
+      termTimers.push(setTimeout(function(){
+        var row=document.createElement('div');row.className='cltl';
+        row.innerHTML='<span style="color:'+GRAY+'">'+ln[0]+' </span><span style="color:'+ln[2]+'">'+ln[1]+'</span> <span style="color:'+ln[4]+';font-weight:'+(n===lines.length-1?'500':'400')+'">'+ln[3]+'</span>';
+        term.appendChild(row);
+        requestAnimationFrame(function(){row.classList.add('in');term.scrollTop=term.scrollHeight;});
+      },t));
+      t+=ln[5]===1?130:300;
+    });
+  }
+
+  document.getElementById('cl-msg').onclick=function(){
+    document.getElementById('cl-inbox').style.display='none';
+    document.getElementById('cl-email').style.display='block';
+  };
+  document.getElementById('cl-cta').onclick=function(){openMail(T[lang].mailSub,T[lang].mailBody);};
+
+  applyLang();
+})();
+</script>
+</body>
+</html>
